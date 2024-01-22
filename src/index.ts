@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import compression  from 'compression';
 import cors         from 'cors';
 
+import router from './router';
+
 // Creating an instance of the Express application
 const app = express();
 // Configuring Cross-Origin Resource Sharing (CORS) middleware
@@ -62,3 +64,5 @@ async function run() {
 }
 // Running the connection function
 run().catch(console.dir);
+
+app.use('/', router());
