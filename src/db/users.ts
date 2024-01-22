@@ -1,5 +1,4 @@
 // Importing necessary dependencies
-import { Int32 } from 'mongodb';
 import mongoose from 'mongoose';
 
 // Defining the schema for the User model
