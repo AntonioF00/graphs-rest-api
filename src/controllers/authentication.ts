@@ -6,6 +6,7 @@ import { random, authentication }       from '../helpers';
 // Controller function for user registration
 export const register = async (req: express.Request, res: express.Response) => {
   try {
+    console.log('register method called...')
     // Destructuring user registration data from the request body
     const { email, password, username } = req.body;
     // Checking if required fields are provided
