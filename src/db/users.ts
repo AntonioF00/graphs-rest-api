@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
         salt:         { type: String, select: false },
         sessionToken: { type: String, select: false },
     },
-    credit:    { type: Int32, default: 100 },
+    credit:    { type: String, default: '100' },
 });
 
 // Creating the User model based on the schema
