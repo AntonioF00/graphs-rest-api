@@ -69,7 +69,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     });
 
     // Sending a success response with the created user information
-    return res.status(200).json(user).end();
+    return res.sendStatus(200).json({message: user}).end();
 
   } catch (error) {
     // Handling errors and sending an error response

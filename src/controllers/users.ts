@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUser } from 'db/users';
+import { getUser } from '../db/users';
 
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
     try{

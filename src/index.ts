@@ -49,7 +49,7 @@ async function run() {
         // Connect the client to the server
         await client.connect();
         // Ping the server to check the connection
-        await client.db("admin").command({ ping: 1 });
+        await client.db("test").command({ ping: 1 });
         console.log("Connected to MongoDB!");
     } catch (error) {
         if (error instanceof Error) {
