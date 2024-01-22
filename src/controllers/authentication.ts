@@ -3,6 +3,39 @@ import express                          from 'express';
 import { getUserByEmail, createUser }   from '../db/users';
 import { random, authentication }       from '../helpers';
 
+// Controller function for user login
+export const login = async (req: express.Request, res: express.Response) => {
+  try {
+    const {email, password} = req.body;
+
+    if(!email || !password){
+      return res.status(400).json({ message: "Email or password is missing." });
+    }
+
+    const user = await getUserByEmail(email).select('+authentication.salt, +authentication.password');
+
+    if(!user){
+      return res.sendStatus(400);
+    }
+
+    const expectedHash = authentication(user.authentication.salt, password);
+
+    if(user.authentication.password != expectedHash){
+      return res.sendStatus(403);
+    }
+
+    const salt = random();
+    user.authentication.sessionToken = authentication(salt, user._id.toString());
+
+    await user.save();
+
+  }catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: error });
+  }
+};
+
+
 // Controller function for user registration
 export const register = async (req: express.Request, res: express.Response) => {
   try {
@@ -38,6 +71,6 @@ export const register = async (req: express.Request, res: express.Response) => {
   } catch (error) {
     // Handling errors and sending an error response
     console.error(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: error });
   }
 };
