@@ -1,34 +1,34 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
-
-// Define the interface for the document
-interface IGraph extends Document {
-  name: string;
-  idUser: number;
-  node: any[]; // You may want to specify a more precise type for the 'node' array
-}
+import { UserModel } from './users';
 
 // Define the schema
-const GraphSchema = new mongoose.Schema<IGraph>({
-    name: { type: String, required: true },
-    idUser: { type: Number, required: true },
-    node: { type: Schema.Types.Mixed, default: [] },
-  });
+const GraphSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  node: { type: Schema.Types.Mixed, default: [] },
+});
 
 // Create the model
-export const GraphModel: Model<IGraph> = mongoose.model('Graph', GraphSchema);
+export const GraphModel = mongoose.model('Graph', GraphSchema);
 
 // CRUD operations
 
-// Get all graphs
-export const getAllGraphs = () => GraphModel.find();
+// Get all graphs with user information
+export const getAllGraphs = () => GraphModel.find().populate('user', 'email');
 
-// Get graph by ID
-export const getGraphById = (id: string) => GraphModel.findById(id);
+// Get graph by ID with user information
+export const getGraphById = (id: string) => GraphModel
+  .findById(id)
+  .populate('user', 'email');
+
+// Get user by graph ID
+export const getUserByGraphId = (graphId: string) => GraphModel
+  .findById(graphId)
+  .populate('user', 'email')
+  .then((graph) => (graph ? graph.user : null));
 
 // Create a new graph
-export const createGraph = (values: Record<string, any>) => new GraphModel(values)
-  .save()
-  .then((graph) => graph.toObject());
+export const createGraph = (values: Record<string, any>) => GraphModel.create(values);
 
 // Update graph by ID
 export const updateGraphById = (id: string, values: Record<string, any>) =>
