@@ -14,7 +14,7 @@ export const GraphModel = mongoose.model('Graph', GraphSchema);
 // CRUD operations
 
 // Get all graphs with user information
-export const getAllGraphs = () => GraphModel.find().populate('user', 'email');
+export const getAllGraphs = () => GraphModel.find();
 
 // Get graph by ID with user information
 export const getGraphById = (id: string) => GraphModel
