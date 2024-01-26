@@ -1,53 +1,66 @@
-import express from 'express';
-import { getAllGraphs, createGraph } from '../db/graphs';
+import { Request, Response } from 'express';
+import * as GraphService from '../db/graphs';
 
-
-export const createGraphs = async (req: express.Request, res: express.Response) => {
-
-    try{
-        const graph = await createGraph(req);
-
-        if(!graph){
-            console.log("ERROR IN CREATING GRAPH");
-            return res.status(400).json({ message : "Failed to create Graph."});
-        }
-
-        return res.sendStatus(200).json(graph);
-
-    }catch(error){
-        console.log("ERROR IN CREATING GRAPH");
-        console.log(error);
-        return res.status(400).json({ message : "Failed to create Graph."});
-    }
+// Esempio di controller per gestire le richieste relative al grafo
+export const getAllGraphs = async (req: Request, res: Response) => {
+  try {
+    const graphs = await GraphService.getAllGraphs();
+    res.status(200).json(graphs);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-export const getGraphs = async (req: express.Request, res: express.Response) => {
-    try{
-
-        const graphs = await getAllGraphs();
-        return res.sendStatus(200).json(graphs);
-
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({message:"Error creating graph"});
+export const getGraphById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const graph = await GraphService.getGraphById(id);
+    if (graph) {
+      res.status(200).json(graph);
+    } else {
+      res.status(404).json({ error: 'Graph not found' });
     }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-export const createNode = async (req: express.Request, res: express.Response) => {
-    try{
-        
-    }catch(error){
-        console.log(error);
-        return res.sendStatus(500).json({message: "Error creating node"});
-    }
+export const createGraph = async (req: Request, res: Response) => {
+  const graphData = req.body;
+  try {
+    const newGraph = await GraphService.createGraph(graphData);
+    res.status(201).json(newGraph);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-
-export const deleteNode = async (req: express.Request, res: express.Response) => {
-    try{
-        
-    }catch(error){
-        console.log(error);
-        return res.sendStatus(500).json({message: "Error deleting node"});
+export const updateGraphById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const graphData = req.body;
+  try {
+    const updatedGraph = await GraphService.updateGraphById(id, graphData);
+    if (updatedGraph) {
+      res.status(200).json(updatedGraph);
+    } else {
+      res.status(404).json({ error: 'Graph not found' });
     }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
+
+export const deleteGraphById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deletedGraph = await GraphService.deleteGraphById(id);
+    if (deletedGraph) {
+      res.status(200).json({ message: 'Graph deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Graph not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
